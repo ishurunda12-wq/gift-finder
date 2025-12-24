@@ -345,9 +345,11 @@
         options: [
           {id:"cooking", label:"Cooking"},
           {id:"music", label:"Music"},
+          {id:"skincare-haircare", label:"Skincare / Haircare"},
           {id:"video-games", label:"Video games"},
           {id:"movies-series", label:"Movies / Series"},
           {id:"journaling", label:"Journaling"},
+          {id:"clothing", label:"Clothing / Fashion"},
           {id:"yoga-meditation", label:"Yoga & Meditation"},
           {id:"coffee-tea", label:"Coffee / Tea"},
           {id:"diy-projects", label:"DIY projects"},
@@ -355,7 +357,7 @@
           {id:"wellness", label:"Wellness"},
           {id:"open", label:"Open to anything"}
         ],
-        hint: "Pick up to 4 interests for best results."
+        hint: "Pick up to 3 interests for best results."
       },
       { key: "budget", title: "Step 4 — Budget (INR)", type: "single",
         options: [
@@ -804,13 +806,19 @@ if (!r.ok) {
     }
 
   function cardHtml(item){
-  const q = encodeURIComponent(item.buyQuery || item.title);
+  const qRaw = (item.buyQuery || item.title || "").trim();
+  const q = encodeURIComponent(qRaw);
 
-  const amazon = `https://www.amazon.in/s?k=${q}`;
+  const amazon  = `https://www.amazon.in/s?k=${q}`;
   const flipkart = `https://www.flipkart.com/search?q=${q}`;
-  const myntra = `https://www.myntra.com/search?q=${q}`;
-  const etsy = `https://www.etsy.com/in-en/search?q=${q}`;
-  const google = `https://www.google.com/search?q=${q}`;
+  const myntra  = `https://www.myntra.com/search?q=${q}`;
+
+  // Blinkit/Swiggy don’t reliably support web search links for all users,
+  // so we send to Google results targeted to those stores (works for everyone).
+  const blinkit = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:blinkit.com")}`;
+  const swiggy  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:swiggy.com")}`;
+
+  const nearMe  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " near me")}`;
 
   return `
     <div class="giftCard">
@@ -826,11 +834,14 @@ if (!r.ok) {
         <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
         <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
         <a class="smallBtn" href="${myntra}" target="_blank" rel="noopener">Myntra</a>
-        <a class="smallBtn" href="${etsy}" target="_blank" rel="noopener">Etsy</a>
-        <a class="smallBtn" href="${google}" target="_blank" rel="noopener">Near me</a>
+        <a class="smallBtn" href="${blinkit}" target="_blank" rel="noopener">Blinkit</a>
+        <a class="smallBtn" href="${swiggy}" target="_blank" rel="noopener">Swiggy</a>
+        <a class="smallBtn" href="${nearMe}" target="_blank" rel="noopener">Near me</a>
       </div>
     </div>
   `;
+}
+
 }
 
 
