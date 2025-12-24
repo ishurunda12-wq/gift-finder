@@ -288,14 +288,15 @@
 
   <script>
     const state = {
-      delivery: null,          // online | offline | either
-      occasion: null,
-      recipient: null,
-      gender: null,
-      interests: [],
-      budget: null,
-      vibe: null,
-      email: null
+       delivery: null,          // online | offline | either
+  occasion: null,
+  recipient: null,
+  gender: null,
+  interests: [],
+  budget: null,
+  vibe: null,
+  email: null,
+  aiGifts: null            // <-- will hold Gemini results
     };
 
     const steps = [
@@ -623,40 +624,81 @@
         const form = document.getElementById("emailForm");
         const input = document.getElementById("emailInput");
 
-        form.addEventListener("submit", async (e) => {
-          e.preventDefault();
-          clearError();
+       form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  clearError();
 
-          const email = (input.value || "").trim();
-          if (!email || !email.includes("@")){
-            showError("Please enter a valid email.");
-            return;
-          }
+  const email = (input.value || "").trim();
+  if (!email || !email.includes("@")) {
+    showError("Please enter a valid email.");
+    return;
+  }
 
-          state.email = email;
-          renderSummary();
+  state.email = email;
+  state.aiGifts = null;
+  renderSummary();
 
-          // post to Netlify Forms
-          const formData = new FormData(form);
-          formData.set("email", email);
-          formData.set("delivery", state.delivery || "");
-          formData.set("occasion", state.occasion || "");
-          formData.set("recipient", state.recipient || "");
-          formData.set("gender", state.gender || "");
-          formData.set("interests", state.interests.join(","));
-          formData.set("budget", state.budget || "");
-          formData.set("vibe", state.vibe || "");
+  // Loading state
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const oldText = submitBtn.textContent;
+  submitBtn.textContent = "Generating…";
+  submitBtn.disabled = true;
 
-          try{
-            await fetch("/", { method:"POST", body: formData });
-          }catch(err){
-            // even if this fails, we still show results; we can debug later
-          }
+  // 1) Save email + answers to Netlify Forms
+  const formData = new FormData(form);
+  formData.set("email", email);
+  formData.set("delivery", state.delivery || "");
+  formData.set("occasion", state.occasion || "");
+  formData.set("recipient", state.recipient || "");
+  formData.set("gender", state.gender || "");
+  formData.set("interests", state.interests.join(","));
+  formData.set("budget", state.budget || "");
+  formData.set("vibe", state.vibe || "");
 
-          // move to results
-          stepIndex = steps.findIndex(x => x.key === "results");
-          renderStep();
-        });
+  try {
+    await fetch("/", { method: "POST", body: formData });
+  } catch (err) {
+    // even if this fails, continue to AI
+  }
+
+  // 2) Call Gemini via Netlify Function
+  try {
+    const r = await fetch("/.netlify/functions/generateGifts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        delivery: state.delivery,
+        occasion: state.occasion,
+        recipient: state.recipient,
+        gender: state.gender,
+        interests: state.interests,
+        budget: state.budget,
+        vibe: state.vibe
+      })
+    });
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      showError(data?.error || "AI failed. Please try again.");
+      submitBtn.textContent = oldText;
+      submitBtn.disabled = false;
+      return;
+    }
+
+    state.aiGifts = data.gifts || [];
+  } catch (err) {
+    showError("Could not reach AI service. Please try again.");
+    submitBtn.textContent = oldText;
+    submitBtn.disabled = false;
+    return;
+  }
+
+  // Go to results screen
+  stepIndex = steps.findIndex(x => x.key === "results");
+  renderStep();
+});
+
 
         // hide bottom nav buttons on email step (since form has its own submit)
         document.getElementById("navControls").style.display = "none";
