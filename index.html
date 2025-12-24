@@ -711,10 +711,20 @@ if (!r.ok) {
       else if (s.type === "results"){
         document.getElementById("navControls").style.display = "flex";
 
-        const mock = buildMockResults();
+       const mock = (state.aiGifts && state.aiGifts.length)
+  ? state.aiGifts.map(g => ({
+      title: g.title,
+      price: g.price_range_inr || "",
+      why: g.why,
+      buyQuery: g.buy_query || g.title,
+      tags: [g.delivery_fit || "either"]
+    }))
+  : buildMockResults();
+
         stepBodyEl.innerHTML = `
           <div class="hint" style="margin-top:0;">
-            Your list is unlocked. Next we will replace these with real AI suggestions (Gemini).
+            Your list is unlocked. These gift ideas are generated based on your answers.
+
           </div>
 
           <div class="results" id="resultsGrid"></div>
