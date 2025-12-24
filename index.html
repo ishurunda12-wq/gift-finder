@@ -18,14 +18,35 @@
       --radius:18px;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(110,231,255,.10), transparent 60%),
-                  radial-gradient(900px 700px at 80% 20%, rgba(167,139,250,.12), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-    }
+  body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(255, 205, 110, .14), transparent 60%),
+    radial-gradient(900px 700px at 80% 20%, rgba(255, 110, 199, .14), transparent 55%),
+    radial-gradient(900px 700px at 30% 90%, rgba(110, 231, 255, .12), transparent 55%),
+    var(--bg);
+  color:var(--text);
+  position: relative;
+  overflow-x: hidden;
+}
+
+body:before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events:none;
+  opacity:.18;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,205,110,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 40% 30%, rgba(255,110,199,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 15%, rgba(110,231,255,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 85% 45%, rgba(167,139,250,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 20% 70%, rgba(110,231,255,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 60% 80%, rgba(255,205,110,.9) 0 2px, transparent 3px);
+  background-size: 240px 240px;
+  filter: blur(.2px);
+}
     a{color:inherit}
     .wrap{
       max-width: 920px;
@@ -245,12 +266,12 @@
         <div class="logo"></div>
         <div>GiftGenie</div>
       </div>
-      <div class="pill" id="statusPill">Clean, minimal gift suggestions for India</div>
+      <div class="pill" id="statusPill">Made for gifting in India</div>
     </div>
 
     <div class="hero">
       <h1>Find a gift that actually fits.</h1>
-      <p>Answer a few quick questions. Unlock your gift list after email. (AI connection comes next.)</p>
+      <p>Answer a few quick questions. Unlock your gift list after email.</p>
     </div>
 
     <div class="grid">
@@ -959,22 +980,8 @@ if (!r.ok) {
       renderStep();
     });
 
-  // initial render: show landing screen
-stepBodyEl.innerHTML = `
-  <div class="hero">
-    <h1 style="margin:0 0 8px 0;">Find a gift that actually fits.</h1>
-    <div class="hint" style="margin-top:0;">
-      Answer a few quick questions. Unlock your gift list after email.
-    </div>
-    <div style="margin-top:16px;">
-      <button class="primaryBtn" id="startBtn">Start</button>
-    </div>
-  </div>
-`;
-document.getElementById("navControls").style.display = "none";
+  // initial render: start the quiz immediately
+stepIndex = 0;
+renderStep();
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  stepIndex = 0;
-  renderStep();
-});
 
