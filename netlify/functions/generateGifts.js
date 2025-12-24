@@ -1,25 +1,26 @@
-export default async (req) => {
-  // Only allow POST
-  if (req.method !== "POST") {
-    return new Response("Method Not Allowed", { status: 405 });
+exports.handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return new Response(
-      JSON.stringify({ error: "Missing GEMINI_API_KEY in Netlify environment variables." }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Missing GEMINI_API_KEY in Netlify environment variables." })
+    };
   }
 
   let payload = {};
   try {
-    payload = await req.json();
+    payload = JSON.parse(event.body || "{}");
   } catch {
-    return new Response(
-      JSON.stringify({ error: "Invalid JSON body." }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
-    );
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Invalid JSON body." })
+    };
   }
 
   const { delivery, occasion, recipient, gender, interests, budget, vibe } = payload;
@@ -65,30 +66,9 @@ Vibe: ${vibe || "thoughtful"}
 RULES:
 - Output exactly 10 gift objects.
 - Stay strictly within the budget.
-- If vibe is "handmade", include at least 3 handmade or personalized gifts.
+- If vibe includes "handmade", include at least 3 handmade or personalized gifts.
 - Bias suggestions for India availability.
 - Output JSON ONLY. No other text.
-`;
-
-
-User inputs:
-- Delivery preference: ${delivery || "either"}
-- Occasion: ${occasion || "unspecified"}
-- Recipient: ${recipient || "unspecified"}
-- Gender (soft preference, avoid stereotypes): ${gender || "prefer-not"}
-- Interests (comma separated): ${(interests || []).join(", ") || "open"}
-- Budget: ${budgetHints[budget] || "₹1,000–₹2,000"}
-- Vibe: ${vibe || "thoughtful"}
-
-Rules:
-- Give 10 gift ideas.
-- Stay within the stated budget range.
-- Make ideas specific and not generic.
-- If vibe is "handmade", ensure at least 3 handmade/personalized ideas.
-- If delivery preference is online, bias to items easy to order online in India.
-- If offline, include locally-buyable ideas (experiences, artisan markets, bookstores, cafes).
-- Avoid anything inappropriate, illegal, or adult content.
-- Output must be valid JSON only.
 `;
 
   const url =
@@ -113,47 +93,57 @@ Rules:
 
     const data = await r.json();
 
-    const text =
-      data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") || "";
-      
-let parsed;
-try {
-  // Extract JSON object even if Gemini adds text
-  const start = text.indexOf("{");
-  const end = text.lastIndexOf("}");
-  if (start === -1 || end === -1) {
-    throw new Error("No JSON object found");
-  }
-
-  const jsonString = text.slice(start, end + 1);
-  parsed = JSON.parse(jsonString);
-} catch (e) {
-  return new Response(
-    JSON.stringify({
-      error: "AI response could not be parsed.",
-      raw: text.slice(0, 2000)
-    }),
-    { status: 502, headers: { "Content-Type": "application/json" } }
-  );
-}
-
-    
-
-    if (!parsed?.gifts || !Array.isArray(parsed.gifts)) {
-      return new Response(
-        JSON.stringify({ error: "Unexpected response format.", raw: parsed }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
-      );
+    // Gemini API can return errors in { error: { message } }
+    if (!r.ok) {
+      return {
+        statusCode: r.status || 500,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error: data?.error?.message || "Gemini request failed.",
+          raw: data
+        })
+      };
     }
 
-    return new Response(JSON.stringify(parsed), {
-      status: 200,
-      headers: { "Content-Type": "application/json" }
-    });
+    const text =
+      data?.candidates?.[0]?.content?.parts?.map((p) => p.text).join("") || "";
+
+    // Safe JSON extraction
+    let parsed;
+    try {
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      if (start === -1 || end === -1) throw new Error("No JSON found");
+      parsed = JSON.parse(text.slice(start, end + 1));
+    } catch {
+      return {
+        statusCode: 502,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          error: "AI response could not be parsed.",
+          raw: text.slice(0, 2000)
+        })
+      };
+    }
+
+    if (!parsed?.gifts || !Array.isArray(parsed.gifts)) {
+      return {
+        statusCode: 502,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ error: "Unexpected response format.", raw: parsed })
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(parsed)
+    };
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: "Failed to call Gemini.", details: String(err) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+    return {
+      statusCode: 500,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Failed to call Gemini.", details: String(err) })
+    };
   }
 };
