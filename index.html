@@ -803,26 +803,36 @@ if (!r.ok) {
       document.getElementById("navControls").style.display = "flex";
     }
 
-    function cardHtml(item){
-      const q = encodeURIComponent(item.buyQuery);
-      const amazon = `https://www.amazon.in/s?k=${q}`;
-      const flipkart = `https://www.flipkart.com/search?q=${q}`;
-      return `
-        <div class="giftCard">
-          <div class="giftTop">
-            <div>
-              <div class="giftTitle">${escapeHtml(item.title)}</div>
-              <div class="why">${escapeHtml(item.why)}</div>
-            </div>
-            <div class="price">${escapeHtml(item.price)}</div>
-          </div>
-          <div class="buyRow">
-            <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
-            <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
-          </div>
+  function cardHtml(item){
+  const q = encodeURIComponent(item.buyQuery || item.title);
+
+  const amazon = `https://www.amazon.in/s?k=${q}`;
+  const flipkart = `https://www.flipkart.com/search?q=${q}`;
+  const myntra = `https://www.myntra.com/search?q=${q}`;
+  const etsy = `https://www.etsy.com/in-en/search?q=${q}`;
+  const google = `https://www.google.com/search?q=${q}`;
+
+  return `
+    <div class="giftCard">
+      <div class="giftTop">
+        <div>
+          <div class="giftTitle">${item.title}</div>
+          <div class="why">${item.why}</div>
         </div>
-      `;
-    }
+        <div class="price">${item.price || ""}</div>
+      </div>
+
+      <div class="buyRow">
+        <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
+        <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
+        <a class="smallBtn" href="${myntra}" target="_blank" rel="noopener">Myntra</a>
+        <a class="smallBtn" href="${etsy}" target="_blank" rel="noopener">Etsy</a>
+        <a class="smallBtn" href="${google}" target="_blank" rel="noopener">Near me</a>
+      </div>
+    </div>
+  `;
+}
+
 
     function buildMockResults(isMore=false){
       // lightweight heuristics just to make the demo feel personalized
