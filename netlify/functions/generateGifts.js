@@ -33,8 +33,13 @@ export default async (req) => {
   };
 
   const prompt = `
-You are GiftGenie, an India-first gifting expert.
-Return ONLY valid JSON (no markdown) in this exact schema:
+SYSTEM INSTRUCTION (follow strictly):
+You must output ONLY valid JSON.
+Do not include explanations, comments, markdown, or extra text.
+Do not wrap the response in backticks.
+Do not say anything before or after the JSON.
+
+Return JSON in EXACTLY this schema:
 
 {
   "gifts": [
@@ -47,6 +52,24 @@ Return ONLY valid JSON (no markdown) in this exact schema:
     }
   ]
 }
+
+USER INPUTS:
+Delivery preference: ${delivery || "either"}
+Occasion: ${occasion || "unspecified"}
+Recipient: ${recipient || "unspecified"}
+Gender (soft preference, avoid stereotypes): ${gender || "prefer-not"}
+Interests: ${(interests || []).join(", ") || "open"}
+Budget: ${budgetHints[budget] || "₹1,000–₹2,000"}
+Vibe: ${vibe || "thoughtful"}
+
+RULES:
+- Output exactly 10 gift objects.
+- Stay strictly within the budget.
+- If vibe is "handmade", include at least 3 handmade or personalized gifts.
+- Bias suggestions for India availability.
+- Output JSON ONLY. No other text.
+`;
+
 
 User inputs:
 - Delivery preference: ${delivery || "either"}
