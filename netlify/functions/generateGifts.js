@@ -72,7 +72,7 @@ RULES:
 `;
 
   const url =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" +
+  "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash-latest:generateContent?key="
   encodeURIComponent(apiKey);
 
   const body = {
