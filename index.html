@@ -678,12 +678,15 @@
     });
 
     const data = await r.json();
+    
+if (!r.ok) {
+   showError(
+  (typeof data?.error === "string" && data.error) ||
+  data?.error?.message ||
+  data?.message ||
+  JSON.stringify(data).slice(0, 300)
+);
 
-    if (!r.ok) {
-      showError(data?.error || "AI failed. Please try again.");
-      submitBtn.textContent = oldText;
-      submitBtn.disabled = false;
-      return;
     }
 
     state.aiGifts = data.gifts || [];
