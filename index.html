@@ -1,13 +1,847 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gift Finder</title>
+  <title>GiftGenie</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111826;
+      --muted:#9aa4b2;
+      --text:#e6edf6;
+      --line:#1f2a3a;
+      --accent:#6ee7ff;
+      --accent2:#a78bfa;
+      --danger:#ff6b6b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(110,231,255,.10), transparent 60%),
+                  radial-gradient(900px 700px at 80% 20%, rgba(167,139,250,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    a{color:inherit}
+    .wrap{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700; letter-spacing:.2px;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      box-shadow: var(--shadow);
+    }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(17,24,38,.65);
+      padding:8px 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .hero{
+      background: rgba(17,24,38,.75);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .hero h1{
+      margin:0 0 8px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (min-width: 900px){
+      .grid{grid-template-columns: 1.2fr .8fr}
+    }
+    .card{
+      background: rgba(17,24,38,.75);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+    .stepHeader{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stepTitle{
+      font-weight:700;
+    }
+    .stepCount{
+      color: var(--muted);
+      font-size: 12px;
+      border:1px solid var(--line);
+      padding:6px 10px;
+      border-radius: 999px;
+      background: rgba(11,15,20,.35);
+      white-space:nowrap;
+    }
+    .options{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    @media (min-width: 540px){
+      .options{grid-template-columns: 1fr 1fr}
+    }
+    .btn{
+      width:100%;
+      text-align:left;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(11,15,20,.35);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .06s ease, border-color .2s ease, background .2s ease;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px;
+    }
+    .btn:hover{ border-color: rgba(110,231,255,.55); }
+    .btn:active{ transform: scale(.99); }
+    .btn.selected{
+      border-color: rgba(110,231,255,.9);
+      background: rgba(110,231,255,.08);
+    }
+    .hint{ color: var(--muted); font-size: 13px; margin-top: 10px; line-height: 1.5;}
+    .controls{
+      display:flex; gap:10px; margin-top: 14px;
+    }
+    .primary, .secondary{
+      flex:1;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      font-weight: 600;
+    }
+    .primary{
+      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      color:#071018;
+      border: none;
+    }
+    .secondary{
+      background: rgba(11,15,20,.35);
+      color: var(--text);
+    }
+    .secondary:disabled, .primary:disabled{
+      opacity:.5; cursor:not-allowed;
+    }
+    .summaryRow{
+      display:flex; justify-content:space-between; gap:10px;
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(31,42,58,.8);
+      font-size: 13px;
+    }
+    .summaryRow:last-child{ border-bottom:none; padding-bottom:0; }
+    .label{ color: var(--muted); }
+    .value{ color: var(--text); text-align:right; }
+    .tag{
+      display:inline-flex; align-items:center; gap:6px;
+      border: 1px solid var(--line);
+      background: rgba(11,15,20,.35);
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 12px;
+      margin: 6px 6px 0 0;
+    }
+    .emailBox{
+      display:flex; gap:10px; margin-top: 10px;
+      flex-direction: column;
+    }
+    @media(min-width:540px){
+      .emailBox{ flex-direction: row; }
+    }
+    input[type="email"]{
+      flex:1;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(11,15,20,.35);
+      color: var(--text);
+      outline:none;
+    }
+    input[type="email"]:focus{
+      border-color: rgba(110,231,255,.7);
+      box-shadow: 0 0 0 3px rgba(110,231,255,.12);
+    }
+    .error{ color: var(--danger); font-size: 13px; margin-top: 8px; }
+    .results{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .giftCard{
+      border:1px solid var(--line);
+      background: rgba(11,15,20,.35);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .giftTop{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap: 10px;
+    }
+    .giftTitle{ font-weight: 700; margin:0 0 4px; }
+    .price{ color: var(--muted); font-size: 12px; white-space:nowrap; }
+    .why{ margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .buyRow{
+      display:flex; gap:8px; margin-top: 12px; flex-wrap: wrap;
+    }
+    .smallBtn{
+      padding: 9px 10px;
+      border-radius: 12px;
+      border:1px solid var(--line);
+      background: rgba(17,24,38,.55);
+      color: var(--text);
+      cursor:pointer;
+      font-weight:600;
+      font-size: 12px;
+      text-decoration:none;
+    }
+    .smallBtn:hover{ border-color: rgba(110,231,255,.55); }
+    .footerNote{
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 40px;">
-  <h1>🎁 Gift Finder</h1>
-  <p>Your AI-powered gifting assistant.</p>
-  <p>Next step: 5-step form + email reveal + AI suggestions.</p>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>GiftGenie</div>
+      </div>
+      <div class="pill" id="statusPill">Clean, minimal gift suggestions for India</div>
+    </div>
+
+    <div class="hero">
+      <h1>Find a gift that actually fits.</h1>
+      <p>Answer a few quick questions. Unlock your gift list after email. (AI connection comes next.)</p>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Flow -->
+      <div class="card" id="flowCard">
+        <div class="stepHeader">
+          <div class="stepTitle" id="stepTitle">Step 0 — Delivery preference</div>
+          <div class="stepCount" id="stepCount">STEP 0 / 6</div>
+        </div>
+
+        <div id="stepBody"></div>
+
+        <div class="controls" id="navControls">
+          <button class="secondary" id="backBtn">Back</button>
+          <button class="primary" id="nextBtn">Next</button>
+        </div>
+
+        <div class="error" id="errorBox" style="display:none;"></div>
+      </div>
+
+      <!-- Right: Summary -->
+      <div class="card" id="summaryCard">
+        <div class="stepHeader">
+          <div class="stepTitle">Your picks</div>
+          <div class="stepCount">LIVE</div>
+        </div>
+
+        <div id="summary"></div>
+        <div class="footerNote">
+          Tip: Keep it simple. The best gifts are specific, useful, and personal.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      delivery: null,          // online | offline | either
+      occasion: null,
+      recipient: null,
+      gender: null,
+      interests: [],
+      budget: null,
+      vibe: null,
+      email: null
+    };
+
+    const steps = [
+      { key: "delivery", title: "Step 0 — Delivery preference", type: "single",
+        options: [
+          {id:"online", label:"Online delivery"},
+          {id:"offline", label:"Offline purchase"},
+          {id:"either", label:"Either is fine"}
+        ],
+        hint: "This helps tailor suggestions (online links vs locally-buyable ideas)."
+      },
+      { key: "occasion", title: "Step 1 — Occasion", type: "single",
+        options: [
+          {id:"birthday", label:"Birthday"},
+          {id:"anniversary", label:"Anniversary"},
+          {id:"wedding", label:"Wedding"},
+          {id:"housewarming", label:"Housewarming"},
+          {id:"farewell", label:"Farewell"},
+          {id:"festival", label:"Festival (Diwali, Rakhi, etc.)"},
+          {id:"new-beginnings", label:"New Beginnings"},
+          {id:"just-because", label:"Just because"}
+        ],
+        hint: "New Beginnings includes: new job, moving, fresh start, healing, new phase."
+      },
+      { key: "recipient_gender", title: "Step 2 — Recipient & gender", type: "compound",
+        recipientOptions: [
+          {id:"grandparents", label:"Grandparents"},
+          {id:"parents", label:"Parents"},
+          {id:"son", label:"Son"},
+          {id:"daughter", label:"Daughter"},
+          {id:"couple", label:"Couple"},
+          {id:"myself", label:"Myself"},
+          {id:"friend", label:"Friend"},
+          {id:"partner", label:"Partner"},
+          {id:"colleague", label:"Colleague"}
+        ],
+        genderOptions: [
+          {id:"male", label:"Male"},
+          {id:"female", label:"Female"},
+          {id:"non-binary", label:"Non-binary"},
+          {id:"prefer-not", label:"Prefer not to say"}
+        ],
+        hint: "Gender is optional and used lightly to avoid stereotypical suggestions."
+      },
+      { key: "interests", title: "Step 3 — Interests", type: "multi",
+        options: [
+          {id:"cooking", label:"Cooking"},
+          {id:"music", label:"Music"},
+          {id:"video-games", label:"Video games"},
+          {id:"movies-series", label:"Movies / Series"},
+          {id:"journaling", label:"Journaling"},
+          {id:"yoga-meditation", label:"Yoga & Meditation"},
+          {id:"coffee-tea", label:"Coffee / Tea"},
+          {id:"diy-projects", label:"DIY projects"},
+          {id:"pottery", label:"Pottery / Ceramics"},
+          {id:"wellness", label:"Wellness"},
+          {id:"open", label:"Open to anything"}
+        ],
+        hint: "Pick up to 4 interests for best results."
+      },
+      { key: "budget", title: "Step 4 — Budget (INR)", type: "single",
+        options: [
+          {id:"under-500", label:"Under ₹500"},
+          {id:"500-1000", label:"₹500–₹1,000"},
+          {id:"1000-2000", label:"₹1,000–₹2,000"},
+          {id:"2000-5000", label:"₹2,000–₹5,000"},
+          {id:"5000-plus", label:"₹5,000+"}
+        ],
+        hint: "We’ll keep suggestions inside this budget range."
+      },
+      { key: "vibe", title: "Step 5 — Vibe", type: "single",
+        options: [
+          {id:"thoughtful", label:"Thoughtful"},
+          {id:"fun", label:"Fun / Quirky"},
+          {id:"premium", label:"Premium"},
+          {id:"practical", label:"Practical"},
+          {id:"emotional", label:"Emotional"},
+          {id:"handmade", label:"Handmade"}
+        ],
+        hint: "Handmade prioritizes artisan, personalized, and DIY-style ideas."
+      },
+      { key: "email_gate", title: "Unlock your gift list", type: "email",
+        hint: "Enter your email to reveal your gift ideas. No spam."
+      },
+      { key: "results", title: "Your gift ideas", type: "results",
+        hint: "These are mock results for now. Next step: connect Gemini for real AI."
+      }
+    ];
+
+    let stepIndex = 0;
+
+    const stepTitleEl = document.getElementById("stepTitle");
+    const stepCountEl = document.getElementById("stepCount");
+    const stepBodyEl = document.getElementById("stepBody");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const errorBox = document.getElementById("errorBox");
+    const summaryEl = document.getElementById("summary");
+
+    function showError(msg){
+      errorBox.textContent = msg;
+      errorBox.style.display = "block";
+    }
+    function clearError(){
+      errorBox.textContent = "";
+      errorBox.style.display = "none";
+    }
+
+    function setSelected(buttons, id){
+      buttons.forEach(b => {
+        if (b.dataset.id === id) b.classList.add("selected");
+        else b.classList.remove("selected");
+      });
+    }
+
+    function renderSummary(){
+      const lines = [];
+      const map = (v) => v ? v : "—";
+
+      lines.push(row("Delivery", map(state.delivery)));
+      lines.push(row("Occasion", map(state.occasion)));
+      lines.push(row("Recipient", map(state.recipient)));
+      lines.push(row("Gender", map(state.gender)));
+      lines.push(row("Interests", state.interests.length ? state.interests.join(", ") : "—"));
+      lines.push(row("Budget", map(state.budget)));
+      lines.push(row("Vibe", map(state.vibe)));
+
+      summaryEl.innerHTML = lines.join("") + tags();
+    }
+
+    function row(label, value){
+      return `
+        <div class="summaryRow">
+          <div class="label">${label}</div>
+          <div class="value">${escapeHtml(value)}</div>
+        </div>`;
+    }
+
+    function tags(){
+      const picked = [];
+      if (state.delivery) picked.push(state.delivery);
+      if (state.occasion) picked.push(state.occasion);
+      if (state.recipient) picked.push(state.recipient);
+      if (state.gender) picked.push(state.gender);
+      state.interests.forEach(i => picked.push(i));
+      if (state.budget) picked.push(state.budget);
+      if (state.vibe) picked.push(state.vibe);
+
+      if (!picked.length) return "";
+      return `<div style="margin-top:10px;">` + picked.slice(0,10).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("") + `</div>`;
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function canGoNext(){
+      const s = steps[stepIndex];
+      if (s.key === "delivery") return !!state.delivery;
+      if (s.key === "occasion") return !!state.occasion;
+      if (s.key === "recipient_gender") return !!state.recipient && !!state.gender;
+      if (s.key === "interests") return state.interests.length > 0;
+      if (s.key === "budget") return !!state.budget;
+      if (s.key === "vibe") return !!state.vibe;
+      if (s.key === "email_gate") return !!state.email;
+      return true;
+    }
+
+    function renderStep(){
+      clearError();
+      renderSummary();
+
+      const s = steps[stepIndex];
+      const totalSteps = 6; // 0..5 are the question steps
+      const countLabel = (stepIndex <= 5) ? `STEP ${stepIndex} / ${totalSteps}` : (s.key === "email_gate" ? "EMAIL" : "RESULTS");
+
+      stepTitleEl.textContent = s.title;
+      stepCountEl.textContent = countLabel;
+
+      backBtn.disabled = stepIndex === 0;
+      nextBtn.textContent = (s.key === "email_gate") ? "Reveal gifts" : (s.key === "results" ? "Start over" : "Next");
+      nextBtn.disabled = !canGoNext();
+
+      if (s.type === "single"){
+        const current = state[s.key];
+        const buttons = s.options.map(opt => `
+          <button class="btn ${current===opt.id ? "selected":""}" data-id="${opt.id}">
+            <span>${opt.label}</span>
+            <span style="color:var(--muted); font-size:12px;">Select</span>
+          </button>
+        `).join("");
+
+        stepBodyEl.innerHTML = `
+          <div class="options">${buttons}</div>
+          <div class="hint">${s.hint}</div>
+        `;
+
+        const btns = [...stepBodyEl.querySelectorAll(".btn")];
+        btns.forEach(b => b.addEventListener("click", () => {
+          state[s.key] = b.dataset.id;
+          setSelected(btns, b.dataset.id);
+          nextBtn.disabled = !canGoNext();
+          renderSummary();
+        }));
+      }
+
+      else if (s.type === "compound"){
+        stepBodyEl.innerHTML = `
+          <div class="hint" style="margin-top:0;">Choose who you're gifting to:</div>
+          <div class="options" id="recOpts"></div>
+          <div class="hint">Choose gender (optional in spirit, required in flow for now):</div>
+          <div class="options" id="genOpts"></div>
+          <div class="hint">${s.hint}</div>
+        `;
+
+        const recWrap = stepBodyEl.querySelector("#recOpts");
+        const genWrap = stepBodyEl.querySelector("#genOpts");
+
+        recWrap.innerHTML = s.recipientOptions.map(opt => `
+          <button class="btn ${state.recipient===opt.id ? "selected":""}" data-id="${opt.id}">
+            <span>${opt.label}</span><span style="color:var(--muted); font-size:12px;">Select</span>
+          </button>
+        `).join("");
+
+        genWrap.innerHTML = s.genderOptions.map(opt => `
+          <button class="btn ${state.gender===opt.id ? "selected":""}" data-id="${opt.id}">
+            <span>${opt.label}</span><span style="color:var(--muted); font-size:12px;">Select</span>
+          </button>
+        `).join("");
+
+        const recBtns = [...recWrap.querySelectorAll(".btn")];
+        const genBtns = [...genWrap.querySelectorAll(".btn")];
+
+        recBtns.forEach(b => b.addEventListener("click", () => {
+          state.recipient = b.dataset.id;
+          setSelected(recBtns, b.dataset.id);
+          nextBtn.disabled = !canGoNext();
+          renderSummary();
+        }));
+
+        genBtns.forEach(b => b.addEventListener("click", () => {
+          state.gender = b.dataset.id;
+          setSelected(genBtns, b.dataset.id);
+          nextBtn.disabled = !canGoNext();
+          renderSummary();
+        }));
+      }
+
+      else if (s.type === "multi"){
+        const selected = new Set(state.interests);
+        stepBodyEl.innerHTML = `
+          <div class="options" id="multiOpts"></div>
+          <div class="hint">${s.hint}</div>
+        `;
+        const wrap = stepBodyEl.querySelector("#multiOpts");
+        wrap.innerHTML = s.options.map(opt => `
+          <button class="btn ${selected.has(opt.id) ? "selected":""}" data-id="${opt.id}">
+            <span>${opt.label}</span>
+            <span style="color:var(--muted); font-size:12px;">Toggle</span>
+          </button>
+        `).join("");
+
+        const btns = [...wrap.querySelectorAll(".btn")];
+        btns.forEach(b => b.addEventListener("click", () => {
+          const id = b.dataset.id;
+
+          // if "open" chosen, clear others
+          if (id === "open"){
+            state.interests = ["open"];
+            btns.forEach(x => x.classList.remove("selected"));
+            b.classList.add("selected");
+            nextBtn.disabled = !canGoNext();
+            renderSummary();
+            return;
+          }
+
+          // if selecting something else, remove "open"
+          state.interests = state.interests.filter(x => x !== "open");
+
+          const set = new Set(state.interests);
+          if (set.has(id)) set.delete(id);
+          else {
+            if (set.size >= 4){
+              showError("Pick up to 4 interests for best results.");
+              return;
+            }
+            set.add(id);
+          }
+          state.interests = [...set];
+          b.classList.toggle("selected");
+          nextBtn.disabled = !canGoNext();
+          renderSummary();
+        }));
+      }
+
+      else if (s.type === "email"){
+        stepBodyEl.innerHTML = `
+          <div class="hint" style="margin-top:0;">
+            We’ve prepared a gift list based on your answers. Enter your email to unlock it.
+          </div>
+
+          <form name="giftgenie_emails" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="emailForm">
+            <input type="hidden" name="form-name" value="giftgenie_emails" />
+            <p style="display:none;">
+              <label>Don’t fill this out: <input name="bot-field" /></label>
+            </p>
+
+            <div class="emailBox">
+              <input type="email" name="email" id="emailInput" placeholder="you@example.com" required />
+              <button class="primary" type="submit" style="flex:0.6;">Reveal gifts</button>
+            </div>
+
+            <div class="hint" style="margin-top:10px;">
+              No spam. One email per search. You can unsubscribe anytime.
+            </div>
+          </form>
+        `;
+
+        // intercept submit so we can "reveal" without leaving the page
+        const form = document.getElementById("emailForm");
+        const input = document.getElementById("emailInput");
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          clearError();
+
+          const email = (input.value || "").trim();
+          if (!email || !email.includes("@")){
+            showError("Please enter a valid email.");
+            return;
+          }
+
+          state.email = email;
+          renderSummary();
+
+          // post to Netlify Forms
+          const formData = new FormData(form);
+          formData.set("email", email);
+          formData.set("delivery", state.delivery || "");
+          formData.set("occasion", state.occasion || "");
+          formData.set("recipient", state.recipient || "");
+          formData.set("gender", state.gender || "");
+          formData.set("interests", state.interests.join(","));
+          formData.set("budget", state.budget || "");
+          formData.set("vibe", state.vibe || "");
+
+          try{
+            await fetch("/", { method:"POST", body: formData });
+          }catch(err){
+            // even if this fails, we still show results; we can debug later
+          }
+
+          // move to results
+          stepIndex = steps.findIndex(x => x.key === "results");
+          renderStep();
+        });
+
+        // hide bottom nav buttons on email step (since form has its own submit)
+        document.getElementById("navControls").style.display = "none";
+        return;
+      }
+
+      else if (s.type === "results"){
+        document.getElementById("navControls").style.display = "flex";
+
+        const mock = buildMockResults();
+        stepBodyEl.innerHTML = `
+          <div class="hint" style="margin-top:0;">
+            Your list is unlocked. Next we will replace these with real AI suggestions (Gemini).
+          </div>
+
+          <div class="results" id="resultsGrid"></div>
+
+          <div class="buyRow" style="margin-top:14px;">
+            <button class="smallBtn" id="moreBtn">Show 5 more</button>
+            <button class="smallBtn" id="refineBtn">Make it more personal</button>
+          </div>
+
+          <div class="footerNote">
+            Links are search links for now. Later we’ll add affiliate links when you’re ready.
+          </div>
+        `;
+
+        const grid = document.getElementById("resultsGrid");
+        grid.innerHTML = mock.map(cardHtml).join("");
+
+        document.getElementById("moreBtn").addEventListener("click", () => {
+          const more = buildMockResults(true);
+          grid.insertAdjacentHTML("beforeend", more.map(cardHtml).join(""));
+        });
+
+        document.getElementById("refineBtn").addEventListener("click", () => {
+          showError("Refinement is coming with real AI. Next step: connect Gemini.");
+          setTimeout(clearError, 2500);
+        });
+
+        nextBtn.textContent = "Start over";
+        nextBtn.disabled = false;
+      }
+
+      // ensure nav buttons are visible in normal steps
+      document.getElementById("navControls").style.display = "flex";
+    }
+
+    function cardHtml(item){
+      const q = encodeURIComponent(item.buyQuery);
+      const amazon = `https://www.amazon.in/s?k=${q}`;
+      const flipkart = `https://www.flipkart.com/search?q=${q}`;
+      return `
+        <div class="giftCard">
+          <div class="giftTop">
+            <div>
+              <div class="giftTitle">${escapeHtml(item.title)}</div>
+              <div class="why">${escapeHtml(item.why)}</div>
+            </div>
+            <div class="price">${escapeHtml(item.price)}</div>
+          </div>
+          <div class="buyRow">
+            <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
+            <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function buildMockResults(isMore=false){
+      // lightweight heuristics just to make the demo feel personalized
+      const budget = state.budget || "1000-2000";
+      const vibe = state.vibe || "thoughtful";
+      const interests = state.interests || [];
+      const occasion = state.occasion || "birthday";
+
+      const budgetMap = {
+        "under-500":"₹200–₹500",
+        "500-1000":"₹500–₹1,000",
+        "1000-2000":"₹1,000–₹2,000",
+        "2000-5000":"₹2,000–₹5,000",
+        "5000-plus":"₹5,000+"
+      };
+
+      const p = budgetMap[budget] || "₹1,000–₹2,000";
+
+      const base = [
+        pick("handmade", "Handmade memory box + note set", p, "Looks personal without being expensive. Great for keepsakes."),
+        pick("journaling", "Premium journal + gel pen set", p, "A simple, high-utility gift that feels thoughtful."),
+        pick("coffee-tea", "Coffee tasting sampler / tea gift set", p, "Low-risk, high-delight for most people."),
+        pick("cooking", "Compact spice kit + recipe cards", p, "Practical and fun if they like cooking."),
+        pick("wellness", "Wellness hamper (candles + bath + herbal)", p, "A calm, self-care vibe that suits many occasions."),
+        pick("music", "Mini Bluetooth speaker stand / desk setup", p, "Upgrades daily life without being too personal."),
+        pick("movies-series", "Movie-night kit (snacks + popcorn bowl)", p, "Turns a normal night into an experience."),
+        pick("video-games", "Game store gift card or accessory kit", p, "Lets them choose while still feeling intentional."),
+        pick("yoga-meditation", "Yoga strap + mat towel combo", p, "Useful and aligned with healthy routines."),
+        pick("pottery", "Handmade ceramic mug", p, "Feels premium and personal; easy to use daily."),
+        pick("diy-projects", "DIY craft kit (beginner-friendly)", p, "Gives them an activity, not just an object.")
+      ];
+
+      // filter to match interest/vibe (lightly)
+      let filtered = base;
+
+      if (vibe === "handmade"){
+        filtered = base.filter(x => x.tags.includes("handmade") || x.title.toLowerCase().includes("handmade") || x.title.toLowerCase().includes("ceramic"));
+      } else if (interests.length && !interests.includes("open")){
+        filtered = base.filter(x => interests.some(t => x.tags.includes(t)));
+      }
+
+      // occasion tweak
+      if (occasion === "new-beginnings"){
+        filtered.unshift({title:"‘New beginnings’ care package", price:p, why:"A fresh-start bundle: something useful + something comforting.", buyQuery:"new beginnings care package hamper"});
+      }
+
+      const slice = isMore ? filtered.slice(5,10) : filtered.slice(0,5);
+      return slice.length ? slice : base.slice(0,5);
+    }
+
+    function pick(tag, title, price, why){
+      return { title, price, why, buyQuery: title, tags:[tag] };
+    }
+
+    function validateCurrentStep(){
+      const s = steps[stepIndex];
+      if (s.key === "recipient_gender" && (!state.recipient || !state.gender)){
+        showError("Please select a recipient and a gender.");
+        return false;
+      }
+      if (s.type === "multi" && state.interests.length === 0){
+        showError("Please select at least one interest.");
+        return false;
+      }
+      if (s.type === "single" && !state[s.key]){
+        showError("Please select an option to continue.");
+        return false;
+      }
+      return true;
+    }
+
+    backBtn.addEventListener("click", () => {
+      clearError();
+      if (stepIndex > 0) stepIndex--;
+      renderStep();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      clearError();
+
+      // results step: start over
+      if (steps[stepIndex].key === "results"){
+        stepIndex = 0;
+        state.delivery = null;
+        state.occasion = null;
+        state.recipient = null;
+        state.gender = null;
+        state.interests = [];
+        state.budget = null;
+        state.vibe = null;
+        state.email = null;
+        renderStep();
+        return;
+      }
+
+      // normal validation
+      if (!validateCurrentStep()) return;
+
+      // move forward
+      stepIndex++;
+
+      // if we arrive at email step, hide Next/Back and rely on form
+      if (steps[stepIndex].key === "email_gate"){
+        renderStep();
+        return;
+      }
+
+      // if somehow we pass step 5, go to email
+      if (stepIndex > 5){
+        stepIndex = steps.findIndex(x => x.key === "email_gate");
+      }
+
+      renderStep();
+    });
+
+    // initial render
+    renderStep();
+  </script>
 </body>
 </html>
