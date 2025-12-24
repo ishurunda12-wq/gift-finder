@@ -959,8 +959,22 @@ if (!r.ok) {
       renderStep();
     });
 
-    // initial render
-    renderStep();
-  </script>
-</body>
-</html>
+  // initial render: show landing screen
+stepBodyEl.innerHTML = `
+  <div class="hero">
+    <h1 style="margin:0 0 8px 0;">Find a gift that actually fits.</h1>
+    <div class="hint" style="margin-top:0;">
+      Answer a few quick questions. Unlock your gift list after email.
+    </div>
+    <div style="margin-top:16px;">
+      <button class="primaryBtn" id="startBtn">Start</button>
+    </div>
+  </div>
+`;
+document.getElementById("navControls").style.display = "none";
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  stepIndex = 0;
+  renderStep();
+});
+
