@@ -742,10 +742,54 @@ if (!r.ok) {
         const grid = document.getElementById("resultsGrid");
         grid.innerHTML = mock.map(cardHtml).join("");
 
-        document.getElementById("moreBtn").addEventListener("click", () => {
-          const more = buildMockResults(true);
-          grid.insertAdjacentHTML("beforeend", more.map(cardHtml).join(""));
-        });
+        document.getElementById("refineBtn").addEventListener("click", async () => {
+  clearError();
+
+  const refineBtn = document.getElementById("refineBtn");
+  const oldText = refineBtn.textContent;
+  refineBtn.textContent = "Refining…";
+  refineBtn.disabled = true;
+
+  try {
+    const r = await fetch("/.netlify/functions/generateGifts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        delivery: state.delivery,
+        occasion: state.occasion,
+        recipient: state.recipient,
+        gender: state.gender,
+        interests: state.interests,
+        budget: state.budget,
+        vibe: `${state.vibe || ""} + more personal + more thoughtful + include 2 experience gifts + include 2 personalized or handmade ideas`
+      })
+    });
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      showError(
+        (typeof data?.error === "string" && data.error) ||
+        data?.error?.message ||
+        data?.message ||
+        JSON.stringify(data).slice(0, 300)
+      );
+      refineBtn.textContent = oldText;
+      refineBtn.disabled = false;
+      return;
+    }
+
+    // Replace current results with refined AI results
+    state.aiGifts = data.gifts || [];
+    renderStep();
+  } catch (err) {
+    showError("Could not refine right now. Please try again.");
+  }
+
+  refineBtn.textContent = oldText;
+  refineBtn.disabled = false;
+});
+
 
         document.getElementById("refineBtn").addEventListener("click", () => {
           showError("Refinement is coming with real AI. Next step: connect Gemini.");
