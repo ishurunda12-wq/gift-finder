@@ -115,19 +115,29 @@ Rules:
 
     const text =
       data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") || "";
+      
+let parsed;
+try {
+  // Extract JSON object even if Gemini adds text
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1) {
+    throw new Error("No JSON object found");
+  }
 
-    let parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      return new Response(
-        JSON.stringify({
-          error: "Gemini did not return valid JSON.",
-          raw: text.slice(0, 2000)
-        }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
-      );
-    }
+  const jsonString = text.slice(start, end + 1);
+  parsed = JSON.parse(jsonString);
+} catch (e) {
+  return new Response(
+    JSON.stringify({
+      error: "AI response could not be parsed.",
+      raw: text.slice(0, 2000)
+    }),
+    { status: 502, headers: { "Content-Type": "application/json" } }
+  );
+}
+
+    
 
     if (!parsed?.gifts || !Array.isArray(parsed.gifts)) {
       return new Response(
