@@ -72,8 +72,8 @@ RULES:
 `;
 
   const url =
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" +
-    encodeURIComponent(apiKey);
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=" +
+  encodeURIComponent(apiKey);
 
   const body = {
     contents: [{ role: "user", parts: [{ text: prompt }] }],
