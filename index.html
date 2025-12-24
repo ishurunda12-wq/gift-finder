@@ -6,25 +6,25 @@
   <title>GiftGenie</title>
   <style>
     :root{
-      --bg:#0b0f14;
-      --card:#111826;
-      --muted:#9aa4b2;
-      --text:#e6edf6;
-      --line:#1f2a3a;
-      --accent:#6ee7ff;
-      --accent2:#a78bfa;
-      --danger:#ff6b6b;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
-    }
+  --bg:#f7f7fb;
+  --card: rgba(255,255,255,.78);
+  --muted:#5b6472;
+  --text:#0b1220;
+  --line: rgba(15, 23, 42, .12);
+  --accent:#06b6d4;
+  --accent2:#8b5cf6;
+  --danger:#dc2626;
+  --shadow: 0 10px 30px rgba(2,6,23,.10);
+  --radius:18px;
+}
     *{box-sizing:border-box}
-  body{
+body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
   background:
-    radial-gradient(1200px 800px at 20% 10%, rgba(255, 205, 110, .14), transparent 60%),
-    radial-gradient(900px 700px at 80% 20%, rgba(255, 110, 199, .14), transparent 55%),
-    radial-gradient(900px 700px at 30% 90%, rgba(110, 231, 255, .12), transparent 55%),
+    radial-gradient(900px 600px at 10% 10%, rgba(255, 205, 110, .35), transparent 60%),
+    radial-gradient(900px 600px at 85% 18%, rgba(255, 110, 199, .28), transparent 55%),
+    radial-gradient(900px 650px at 30% 90%, rgba(6, 182, 212, .20), transparent 55%),
     var(--bg);
   color:var(--text);
   position: relative;
@@ -36,16 +36,13 @@ body:before{
   position: fixed;
   inset: 0;
   pointer-events:none;
-  opacity:.18;
+  opacity:.12;
   background-image:
     radial-gradient(circle at 10% 20%, rgba(255,205,110,.9) 0 2px, transparent 3px),
     radial-gradient(circle at 40% 30%, rgba(255,110,199,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, rgba(110,231,255,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 85% 45%, rgba(167,139,250,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 20% 70%, rgba(110,231,255,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 60% 80%, rgba(255,205,110,.9) 0 2px, transparent 3px);
-  background-size: 240px 240px;
-  filter: blur(.2px);
+    radial-gradient(circle at 70% 15%, rgba(6,182,212,.9) 0 2px, transparent 3px),
+    radial-gradient(circle at 85% 45%, rgba(139,92,246,.9) 0 2px, transparent 3px);
+  background-size: 260px 260px;
 }
     a{color:inherit}
     .wrap{
@@ -980,8 +977,8 @@ if (!r.ok) {
       renderStep();
     });
 
-  // initial render: start the quiz immediately
-stepIndex = 0;
+// initial render
 renderStep();
+
 
 
