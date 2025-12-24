@@ -4,250 +4,308 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>GiftGenie</title>
+
   <style>
     :root{
-  --bg:#f7f7fb;
-  --card: rgba(255,255,255,.78);
-  --muted:#5b6472;
-  --text:#0b1220;
-  --line: rgba(15, 23, 42, .12);
-  --accent:#06b6d4;
-  --accent2:#8b5cf6;
-  --danger:#dc2626;
-  --shadow: 0 10px 30px rgba(2,6,23,.10);
-  --radius:18px;
-}
-    *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-  background:
-    radial-gradient(900px 600px at 10% 10%, rgba(255, 205, 110, .35), transparent 60%),
-    radial-gradient(900px 600px at 85% 18%, rgba(255, 110, 199, .28), transparent 55%),
-    radial-gradient(900px 650px at 30% 90%, rgba(6, 182, 212, .20), transparent 55%),
-    var(--bg);
-  color:var(--text);
-  position: relative;
-  overflow-x: hidden;
-}
+      --bg:#f7f7fb;
+      --card: rgba(255,255,255,.86);
+      --muted:#5b6472;
+      --text:#0b1220;
+      --line: rgba(15, 23, 42, .12);
+      --accent:#06b6d4;
+      --accent2:#8b5cf6;
+      --danger:#dc2626;
+      --shadow: 0 10px 30px rgba(2,6,23,.10);
+      --radius:18px;
+    }
 
-body:before{
-  content:"";
-  position: fixed;
-  inset: 0;
-  pointer-events:none;
-  opacity:.12;
-  background-image:
-    radial-gradient(circle at 10% 20%, rgba(255,205,110,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 40% 30%, rgba(255,110,199,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 70% 15%, rgba(6,182,212,.9) 0 2px, transparent 3px),
-    radial-gradient(circle at 85% 45%, rgba(139,92,246,.9) 0 2px, transparent 3px);
-  background-size: 260px 260px;
-}
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(255, 205, 110, .38), transparent 60%),
+        radial-gradient(900px 600px at 85% 18%, rgba(255, 110, 199, .30), transparent 55%),
+        radial-gradient(900px 650px at 30% 90%, rgba(6, 182, 212, .22), transparent 55%),
+        radial-gradient(1000px 700px at 80% 88%, rgba(139,92,246,.18), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* confetti dots */
+    body:before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      opacity:.18;
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,205,110,.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 40% 30%, rgba(255,110,199,.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 70% 15%, rgba(6,182,212,.95) 0 2px, transparent 3px),
+        radial-gradient(circle at 85% 45%, rgba(139,92,246,.95) 0 2px, transparent 3px);
+      background-size: 260px 260px;
+    }
+
     a{color:inherit}
+
     .wrap{
       max-width: 920px;
       margin: 0 auto;
       padding: 28px 16px 60px;
     }
+
     .topbar{
       display:flex; align-items:center; justify-content:space-between;
       gap:12px; margin-bottom:18px;
     }
+
     .brand{
       display:flex; align-items:center; gap:10px;
       font-weight:700; letter-spacing:.2px;
     }
+
     .logo{
       width:34px;height:34px;border-radius:12px;
-      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      background: linear-gradient(135deg, rgba(6,182,212,.95), rgba(139,92,246,.95));
       box-shadow: var(--shadow);
     }
+
     .pill{
       border:1px solid var(--line);
-      background: rgba(17,24,38,.65);
+      background: rgba(255,255,255,.75);
       padding:8px 10px;
       border-radius: 999px;
       color: var(--muted);
       font-size: 12px;
+      white-space: nowrap;
     }
+
     .hero{
-      background: rgba(17,24,38,.75);
+      background: var(--card);
       border:1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 22px;
+      backdrop-filter: blur(8px);
     }
+
     .hero h1{
       margin:0 0 8px;
-      font-size: 22px;
+      font-size: 24px;
       line-height: 1.2;
+      color: var(--text);
     }
+
     .hero p{
       margin:0;
       color: var(--muted);
       line-height: 1.5;
       font-size: 14px;
     }
+
     .grid{
       display:grid;
       grid-template-columns: 1fr;
       gap: 14px;
       margin-top: 14px;
     }
+
     @media (min-width: 900px){
       .grid{grid-template-columns: 1.2fr .8fr}
     }
+
     .card{
-      background: rgba(17,24,38,.75);
+      background: var(--card);
       border:1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       padding: 18px;
+      backdrop-filter: blur(8px);
     }
+
     .stepHeader{
       display:flex; align-items:center; justify-content:space-between;
       gap: 10px;
       margin-bottom: 10px;
     }
+
     .stepTitle{
-      font-weight:700;
+      font-weight:800;
+      color: var(--text);
     }
+
     .stepCount{
       color: var(--muted);
       font-size: 12px;
       border:1px solid var(--line);
       padding:6px 10px;
       border-radius: 999px;
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.65);
       white-space:nowrap;
     }
+
     .options{
       display:grid;
       grid-template-columns: 1fr;
       gap: 10px;
       margin-top: 10px;
     }
+
     @media (min-width: 540px){
       .options{grid-template-columns: 1fr 1fr}
     }
+
     .btn{
       width:100%;
       text-align:left;
       padding: 12px 12px;
       border-radius: 14px;
       border:1px solid var(--line);
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.70);
       color: var(--text);
       cursor:pointer;
       transition: transform .06s ease, border-color .2s ease, background .2s ease;
       display:flex; align-items:center; justify-content:space-between;
       gap:10px;
     }
-    .btn:hover{ border-color: rgba(110,231,255,.55); }
+
+    .btn:hover{ border-color: rgba(6,182,212,.55); }
     .btn:active{ transform: scale(.99); }
+
     .btn.selected{
-      border-color: rgba(110,231,255,.9);
-      background: rgba(110,231,255,.08);
+      border-color: rgba(6,182,212,.75);
+      background: rgba(6,182,212,.12);
     }
-    .hint{ color: var(--muted); font-size: 13px; margin-top: 10px; line-height: 1.5;}
+
+    .hint{
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
     .controls{
       display:flex; gap:10px; margin-top: 14px;
     }
+
     .primary, .secondary{
       flex:1;
       padding: 12px 14px;
       border-radius: 14px;
       border:1px solid var(--line);
       cursor:pointer;
-      font-weight: 600;
+      font-weight: 800;
     }
+
     .primary{
-      background: linear-gradient(135deg, rgba(110,231,255,.95), rgba(167,139,250,.95));
+      background: linear-gradient(135deg, rgba(6,182,212,.95), rgba(139,92,246,.95));
       color:#071018;
       border: none;
     }
+
     .secondary{
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.70);
       color: var(--text);
     }
+
     .secondary:disabled, .primary:disabled{
       opacity:.5; cursor:not-allowed;
     }
+
     .summaryRow{
       display:flex; justify-content:space-between; gap:10px;
       padding: 10px 0;
-      border-bottom: 1px dashed rgba(31,42,58,.8);
+      border-bottom: 1px dashed rgba(15,23,42,.18);
       font-size: 13px;
     }
+
     .summaryRow:last-child{ border-bottom:none; padding-bottom:0; }
+
     .label{ color: var(--muted); }
-    .value{ color: var(--text); text-align:right; }
+    .value{ color: var(--text); text-align:right; font-weight:700; }
+
     .tag{
       display:inline-flex; align-items:center; gap:6px;
       border: 1px solid var(--line);
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.65);
       padding: 7px 10px;
       border-radius: 999px;
-      color: var(--muted);
+      color: rgba(11,18,32,.70);
       font-size: 12px;
       margin: 6px 6px 0 0;
     }
+
     .emailBox{
       display:flex; gap:10px; margin-top: 10px;
       flex-direction: column;
     }
+
     @media(min-width:540px){
       .emailBox{ flex-direction: row; }
     }
+
     input[type="email"]{
       flex:1;
       padding: 12px 12px;
       border-radius: 14px;
       border:1px solid var(--line);
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.70);
       color: var(--text);
       outline:none;
     }
+
     input[type="email"]:focus{
-      border-color: rgba(110,231,255,.7);
-      box-shadow: 0 0 0 3px rgba(110,231,255,.12);
+      border-color: rgba(6,182,212,.7);
+      box-shadow: 0 0 0 3px rgba(6,182,212,.12);
     }
-    .error{ color: var(--danger); font-size: 13px; margin-top: 8px; }
+
+    .error{ color: var(--danger); font-size: 13px; margin-top: 8px; font-weight:700; }
+
     .results{
       display:grid;
       grid-template-columns: 1fr;
       gap: 12px;
       margin-top: 12px;
     }
+
     .giftCard{
       border:1px solid var(--line);
-      background: rgba(11,15,20,.35);
+      background: rgba(255,255,255,.70);
       border-radius: 16px;
       padding: 14px;
     }
+
     .giftTop{
       display:flex; align-items:flex-start; justify-content:space-between;
       gap: 10px;
     }
-    .giftTitle{ font-weight: 700; margin:0 0 4px; }
-    .price{ color: var(--muted); font-size: 12px; white-space:nowrap; }
-    .why{ margin: 8px 0 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .giftTitle{ font-weight: 900; margin:0 0 4px; color: var(--text); }
+    .price{ color: rgba(11,18,32,.65); font-size: 12px; white-space:nowrap; font-weight:800; }
+    .why{ margin: 8px 0 0; color: rgba(11,18,32,.70); font-size: 13px; line-height: 1.45; }
+
     .buyRow{
       display:flex; gap:8px; margin-top: 12px; flex-wrap: wrap;
     }
+
     .smallBtn{
       padding: 9px 10px;
       border-radius: 12px;
       border:1px solid var(--line);
-      background: rgba(17,24,38,.55);
+      background: rgba(255,255,255,.78);
       color: var(--text);
       cursor:pointer;
-      font-weight:600;
+      font-weight:800;
       font-size: 12px;
       text-decoration:none;
     }
-    .smallBtn:hover{ border-color: rgba(110,231,255,.55); }
+
+    .smallBtn:hover{ border-color: rgba(6,182,212,.55); }
+
     .footerNote{
       margin-top: 18px;
       color: var(--muted);
@@ -256,6 +314,7 @@ body:before{
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="topbar">
@@ -306,15 +365,15 @@ body:before{
 
   <script>
     const state = {
-       delivery: null,          // online | offline | either
-  occasion: null,
-  recipient: null,
-  gender: null,
-  interests: [],
-  budget: null,
-  vibe: null,
-  email: null,
-  aiGifts: null            // <-- will hold Gemini results
+      delivery: null,
+      occasion: null,
+      recipient: null,
+      gender: null,
+      interests: [],
+      budget: null,
+      vibe: null,
+      email: null,
+      aiGifts: null
     };
 
     const steps = [
@@ -375,7 +434,7 @@ body:before{
           {id:"wellness", label:"Wellness"},
           {id:"open", label:"Open to anything"}
         ],
-        hint: "Pick up to 3 interests for best results."
+        hint: "Pick up to 4 interests for best results."
       },
       { key: "budget", title: "Step 4 — Budget (INR)", type: "single",
         options: [
@@ -402,7 +461,7 @@ body:before{
         hint: "Enter your email to reveal your gift ideas. No spam."
       },
       { key: "results", title: "Your gift ideas", type: "results",
-        hint: "These are mock results for now. Next step: connect Gemini for real AI."
+        hint: "Your list is unlocked. Here are gift ideas based on your answers."
       }
     ];
 
@@ -425,26 +484,20 @@ body:before{
       errorBox.style.display = "none";
     }
 
+    function escapeHtml(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
     function setSelected(buttons, id){
       buttons.forEach(b => {
         if (b.dataset.id === id) b.classList.add("selected");
         else b.classList.remove("selected");
       });
-    }
-
-    function renderSummary(){
-      const lines = [];
-      const map = (v) => v ? v : "—";
-
-      lines.push(row("Delivery", map(state.delivery)));
-      lines.push(row("Occasion", map(state.occasion)));
-      lines.push(row("Recipient", map(state.recipient)));
-      lines.push(row("Gender", map(state.gender)));
-      lines.push(row("Interests", state.interests.length ? state.interests.join(", ") : "—"));
-      lines.push(row("Budget", map(state.budget)));
-      lines.push(row("Vibe", map(state.vibe)));
-
-      summaryEl.innerHTML = lines.join("") + tags();
     }
 
     function row(label, value){
@@ -461,21 +514,27 @@ body:before{
       if (state.occasion) picked.push(state.occasion);
       if (state.recipient) picked.push(state.recipient);
       if (state.gender) picked.push(state.gender);
-      state.interests.forEach(i => picked.push(i));
+      (state.interests || []).forEach(i => picked.push(i));
       if (state.budget) picked.push(state.budget);
       if (state.vibe) picked.push(state.vibe);
 
       if (!picked.length) return "";
-      return `<div style="margin-top:10px;">` + picked.slice(0,10).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("") + `</div>`;
+      return `<div style="margin-top:10px;">` +
+        picked.slice(0,10).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("") +
+        `</div>`;
     }
 
-    function escapeHtml(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+    function renderSummary(){
+      const map = (v) => v ? v : "—";
+      const lines = [];
+      lines.push(row("Delivery", map(state.delivery)));
+      lines.push(row("Occasion", map(state.occasion)));
+      lines.push(row("Recipient", map(state.recipient)));
+      lines.push(row("Gender", map(state.gender)));
+      lines.push(row("Interests", (state.interests && state.interests.length) ? state.interests.join(", ") : "—"));
+      lines.push(row("Budget", map(state.budget)));
+      lines.push(row("Vibe", map(state.vibe)));
+      summaryEl.innerHTML = lines.join("") + tags();
     }
 
     function canGoNext(){
@@ -483,10 +542,27 @@ body:before{
       if (s.key === "delivery") return !!state.delivery;
       if (s.key === "occasion") return !!state.occasion;
       if (s.key === "recipient_gender") return !!state.recipient && !!state.gender;
-      if (s.key === "interests") return state.interests.length > 0;
+      if (s.key === "interests") return (state.interests || []).length > 0;
       if (s.key === "budget") return !!state.budget;
       if (s.key === "vibe") return !!state.vibe;
       if (s.key === "email_gate") return !!state.email;
+      return true;
+    }
+
+    function validateCurrentStep(){
+      const s = steps[stepIndex];
+      if (s.key === "recipient_gender" && (!state.recipient || !state.gender)){
+        showError("Please select a recipient and a gender.");
+        return false;
+      }
+      if (s.type === "multi" && (!state.interests || state.interests.length === 0)){
+        showError("Please select at least one interest.");
+        return false;
+      }
+      if (s.type === "single" && !state[s.key]){
+        showError("Please select an option to continue.");
+        return false;
+      }
       return true;
     }
 
@@ -496,7 +572,9 @@ body:before{
 
       const s = steps[stepIndex];
       const totalSteps = 6; // 0..5 are the question steps
-      const countLabel = (stepIndex <= 5) ? `STEP ${stepIndex} / ${totalSteps}` : (s.key === "email_gate" ? "EMAIL" : "RESULTS");
+      const countLabel = (stepIndex <= 5)
+        ? `STEP ${stepIndex} / ${totalSteps}`
+        : (s.key === "email_gate" ? "EMAIL" : "RESULTS");
 
       stepTitleEl.textContent = s.title;
       stepCountEl.textContent = countLabel;
@@ -505,10 +583,13 @@ body:before{
       nextBtn.textContent = (s.key === "email_gate") ? "Reveal gifts" : (s.key === "results" ? "Start over" : "Next");
       nextBtn.disabled = !canGoNext();
 
+      // show nav by default
+      document.getElementById("navControls").style.display = "flex";
+
       if (s.type === "single"){
         const current = state[s.key];
         const buttons = s.options.map(opt => `
-          <button class="btn ${current===opt.id ? "selected":""}" data-id="${opt.id}">
+          <button class="btn ${current===opt.id ? "selected":""}" data-id="${opt.id}" type="button">
             <span>${opt.label}</span>
             <span style="color:var(--muted); font-size:12px;">Select</span>
           </button>
@@ -526,13 +607,14 @@ body:before{
           nextBtn.disabled = !canGoNext();
           renderSummary();
         }));
+        return;
       }
 
-      else if (s.type === "compound"){
+      if (s.type === "compound"){
         stepBodyEl.innerHTML = `
           <div class="hint" style="margin-top:0;">Choose who you're gifting to:</div>
           <div class="options" id="recOpts"></div>
-          <div class="hint">Choose gender (optional in spirit, required in flow for now):</div>
+          <div class="hint">Choose gender:</div>
           <div class="options" id="genOpts"></div>
           <div class="hint">${s.hint}</div>
         `;
@@ -541,13 +623,13 @@ body:before{
         const genWrap = stepBodyEl.querySelector("#genOpts");
 
         recWrap.innerHTML = s.recipientOptions.map(opt => `
-          <button class="btn ${state.recipient===opt.id ? "selected":""}" data-id="${opt.id}">
+          <button class="btn ${state.recipient===opt.id ? "selected":""}" data-id="${opt.id}" type="button">
             <span>${opt.label}</span><span style="color:var(--muted); font-size:12px;">Select</span>
           </button>
         `).join("");
 
         genWrap.innerHTML = s.genderOptions.map(opt => `
-          <button class="btn ${state.gender===opt.id ? "selected":""}" data-id="${opt.id}">
+          <button class="btn ${state.gender===opt.id ? "selected":""}" data-id="${opt.id}" type="button">
             <span>${opt.label}</span><span style="color:var(--muted); font-size:12px;">Select</span>
           </button>
         `).join("");
@@ -568,17 +650,19 @@ body:before{
           nextBtn.disabled = !canGoNext();
           renderSummary();
         }));
+        return;
       }
 
-      else if (s.type === "multi"){
-        const selected = new Set(state.interests);
+      if (s.type === "multi"){
+        const selected = new Set(state.interests || []);
         stepBodyEl.innerHTML = `
           <div class="options" id="multiOpts"></div>
           <div class="hint">${s.hint}</div>
         `;
+
         const wrap = stepBodyEl.querySelector("#multiOpts");
         wrap.innerHTML = s.options.map(opt => `
-          <button class="btn ${selected.has(opt.id) ? "selected":""}" data-id="${opt.id}">
+          <button class="btn ${selected.has(opt.id) ? "selected":""}" data-id="${opt.id}" type="button">
             <span>${opt.label}</span>
             <span style="color:var(--muted); font-size:12px;">Toggle</span>
           </button>
@@ -588,7 +672,6 @@ body:before{
         btns.forEach(b => b.addEventListener("click", () => {
           const id = b.dataset.id;
 
-          // if "open" chosen, clear others
           if (id === "open"){
             state.interests = ["open"];
             btns.forEach(x => x.classList.remove("selected"));
@@ -598,10 +681,9 @@ body:before{
             return;
           }
 
-          // if selecting something else, remove "open"
-          state.interests = state.interests.filter(x => x !== "open");
-
+          state.interests = (state.interests || []).filter(x => x !== "open");
           const set = new Set(state.interests);
+
           if (set.has(id)) set.delete(id);
           else {
             if (set.size >= 4){
@@ -610,14 +692,16 @@ body:before{
             }
             set.add(id);
           }
+
           state.interests = [...set];
           b.classList.toggle("selected");
           nextBtn.disabled = !canGoNext();
           renderSummary();
         }));
+        return;
       }
 
-      else if (s.type === "email"){
+      if (s.type === "email"){
         stepBodyEl.innerHTML = `
           <div class="hint" style="margin-top:0;">
             We’ve prepared a gift list based on your answers. Enter your email to unlock it.
@@ -640,117 +724,104 @@ body:before{
           </form>
         `;
 
-        // intercept submit so we can "reveal" without leaving the page
+        // hide bottom nav on email step
+        document.getElementById("navControls").style.display = "none";
+
         const form = document.getElementById("emailForm");
         const input = document.getElementById("emailInput");
 
-       form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  clearError();
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          clearError();
 
-  const email = (input.value || "").trim();
-  if (!email || !email.includes("@")) {
-    showError("Please enter a valid email.");
-    return;
-  }
+          const email = (input.value || "").trim();
+          if (!email || !email.includes("@")) {
+            showError("Please enter a valid email.");
+            return;
+          }
 
-  state.email = email;
-  state.aiGifts = null;
-  renderSummary();
+          state.email = email;
+          state.aiGifts = null;
+          renderSummary();
 
-  // Loading state
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const oldText = submitBtn.textContent;
-  submitBtn.textContent = "Generating…";
-  submitBtn.disabled = true;
+          const submitBtn = form.querySelector('button[type="submit"]');
+          const oldText = submitBtn.textContent;
+          submitBtn.textContent = "Generating…";
+          submitBtn.disabled = true;
 
-  // 1) Save email + answers to Netlify Forms
-  const formData = new FormData(form);
-  formData.set("email", email);
-  formData.set("delivery", state.delivery || "");
-  formData.set("occasion", state.occasion || "");
-  formData.set("recipient", state.recipient || "");
-  formData.set("gender", state.gender || "");
-  formData.set("interests", state.interests.join(","));
-  formData.set("budget", state.budget || "");
-  formData.set("vibe", state.vibe || "");
+          // 1) save to Netlify Forms (non-blocking)
+          try {
+            const formData = new FormData(form);
+            formData.set("email", email);
+            formData.set("delivery", state.delivery || "");
+            formData.set("occasion", state.occasion || "");
+            formData.set("recipient", state.recipient || "");
+            formData.set("gender", state.gender || "");
+            formData.set("interests", (state.interests || []).join(","));
+            formData.set("budget", state.budget || "");
+            formData.set("vibe", state.vibe || "");
+            await fetch("/", { method: "POST", body: formData });
+          } catch (_) {}
 
-  try {
-    await fetch("/", { method: "POST", body: formData });
-  } catch (err) {
-    // even if this fails, continue to AI
-  }
+          // 2) try AI (if it fails, we still show mock results)
+          try {
+            const r = await fetch("/.netlify/functions/generateGifts", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                delivery: state.delivery,
+                occasion: state.occasion,
+                recipient: state.recipient,
+                gender: state.gender,
+                interests: state.interests,
+                budget: state.budget,
+                vibe: state.vibe
+              })
+            });
 
-  // 2) Call Gemini via Netlify Function
-  try {
-    const r = await fetch("/.netlify/functions/generateGifts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        delivery: state.delivery,
-        occasion: state.occasion,
-        recipient: state.recipient,
-        gender: state.gender,
-        interests: state.interests,
-        budget: state.budget,
-        vibe: state.vibe
-      })
-    });
+            let data = {};
+            try { data = await r.json(); } catch (_) {}
 
-    const data = await r.json();
-    
-if (!r.ok) {
-   showError(
-  (typeof data?.error === "string" && data.error) ||
-  data?.error?.message ||
-  data?.message ||
-  JSON.stringify(data).slice(0, 300)
-);
+            if (r.ok && data && Array.isArray(data.gifts)) {
+              state.aiGifts = data.gifts;
+            } else {
+              state.aiGifts = null; // fallback to mock
+            }
+          } catch (_) {
+            state.aiGifts = null; // fallback to mock
+          }
 
-    }
+          submitBtn.textContent = oldText;
+          submitBtn.disabled = false;
 
-    state.aiGifts = data.gifts || [];
-  } catch (err) {
-    showError("Could not reach AI service. Please try again.");
-    submitBtn.textContent = oldText;
-    submitBtn.disabled = false;
-    return;
-  }
+          stepIndex = steps.findIndex(x => x.key === "results");
+          renderStep();
+        });
 
-  // Go to results screen
-  stepIndex = steps.findIndex(x => x.key === "results");
-  renderStep();
-});
-
-
-        // hide bottom nav buttons on email step (since form has its own submit)
-        document.getElementById("navControls").style.display = "none";
         return;
       }
 
-      else if (s.type === "results"){
+      if (s.type === "results"){
         document.getElementById("navControls").style.display = "flex";
 
-       const mock = (state.aiGifts && state.aiGifts.length)
-  ? state.aiGifts.map(g => ({
-      title: g.title,
-      price: g.price_range_inr || "",
-      why: g.why,
-      buyQuery: g.buy_query || g.title,
-      tags: [g.delivery_fit || "either"]
-    }))
-  : buildMockResults();
+        const items = (state.aiGifts && state.aiGifts.length)
+          ? state.aiGifts.map(g => ({
+              title: g.title,
+              price: g.price_range_inr || "",
+              why: g.why || "A solid match based on your answers.",
+              buyQuery: g.buy_query || g.title
+            }))
+          : buildMockResults(false);
 
         stepBodyEl.innerHTML = `
           <div class="hint" style="margin-top:0;">
             Your list is unlocked. These gift ideas are generated based on your answers.
-
           </div>
 
           <div class="results" id="resultsGrid"></div>
 
           <div class="buyRow" style="margin-top:14px;">
-            <button class="smallBtn" id="moreBtn">Show 5 more</button>
+            <button class="smallBtn" id="moreBtn" type="button">Show 5 more</button>
           </div>
 
           <div class="footerNote">
@@ -759,114 +830,55 @@ if (!r.ok) {
         `;
 
         const grid = document.getElementById("resultsGrid");
-        grid.innerHTML = mock.map(cardHtml).join("");
+        grid.innerHTML = items.map(cardHtml).join("");
 
-        document.getElementById("refineBtn").addEventListener("click", async () => {
-  clearError();
-
-  const refineBtn = document.getElementById("refineBtn");
-  const oldText = refineBtn.textContent;
-  refineBtn.textContent = "Refining…";
-  refineBtn.disabled = true;
-
-  try {
-    const r = await fetch("/.netlify/functions/generateGifts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        delivery: state.delivery,
-        occasion: state.occasion,
-        recipient: state.recipient,
-        gender: state.gender,
-        interests: state.interests,
-        budget: state.budget,
-        vibe: `${state.vibe || ""} + more personal + more thoughtful + include 2 experience gifts + include 2 personalized or handmade ideas`
-      })
-    });
-
-    const data = await r.json();
-
-    if (!r.ok) {
-      showError(
-        (typeof data?.error === "string" && data.error) ||
-        data?.error?.message ||
-        data?.message ||
-        JSON.stringify(data).slice(0, 300)
-      );
-      refineBtn.textContent = oldText;
-      refineBtn.disabled = false;
-      return;
-    }
-
-    // Replace current results with refined AI results
-    state.aiGifts = data.gifts || [];
-    renderStep();
-  } catch (err) {
-    showError("Could not refine right now. Please try again.");
-  }
-
-  refineBtn.textContent = oldText;
-  refineBtn.disabled = false;
-});
-
-
-        document.getElementById("refineBtn").addEventListener("click", () => {
-          showError("Refinement is coming with real AI. Next step: connect Gemini.");
-          setTimeout(clearError, 2500);
+        document.getElementById("moreBtn").addEventListener("click", () => {
+          const more = buildMockResults(true);
+          grid.insertAdjacentHTML("beforeend", more.map(cardHtml).join(""));
         });
 
         nextBtn.textContent = "Start over";
         nextBtn.disabled = false;
+        return;
       }
-
-      // ensure nav buttons are visible in normal steps
-      document.getElementById("navControls").style.display = "flex";
     }
 
-  function cardHtml(item){
-  const qRaw = (item.buyQuery || item.title || "").trim();
-  const q = encodeURIComponent(qRaw);
+    function cardHtml(item){
+      const qRaw = (item.buyQuery || item.title || "").trim();
+      const q = encodeURIComponent(qRaw);
 
-  const amazon  = `https://www.amazon.in/s?k=${q}`;
-  const flipkart = `https://www.flipkart.com/search?q=${q}`;
-  const myntra  = `https://www.myntra.com/search?q=${q}`;
+      const amazon  = `https://www.amazon.in/s?k=${q}`;
+      const flipkart = `https://www.flipkart.com/search?q=${q}`;
+      const myntra  = `https://www.myntra.com/search?q=${q}`;
 
-  // Blinkit/Swiggy don’t reliably support web search links for all users,
-  // so we send to Google results targeted to those stores (works for everyone).
-  const blinkit = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:blinkit.com")}`;
-  const swiggy  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:swiggy.com")}`;
+      const blinkit = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:blinkit.com")}`;
+      const swiggy  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " site:swiggy.com")}`;
+      const nearMe  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " near me")}`;
 
-  const nearMe  = `https://www.google.com/search?q=${encodeURIComponent(qRaw + " near me")}`;
+      return `
+        <div class="giftCard">
+          <div class="giftTop">
+            <div>
+              <div class="giftTitle">${escapeHtml(item.title)}</div>
+              <div class="why">${escapeHtml(item.why || "")}</div>
+            </div>
+            <div class="price">${escapeHtml(item.price || "")}</div>
+          </div>
 
-  return `
-    <div class="giftCard">
-      <div class="giftTop">
-        <div>
-          <div class="giftTitle">${item.title}</div>
-          <div class="why">${item.why}</div>
+          <div class="buyRow">
+            <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
+            <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
+            <a class="smallBtn" href="${myntra}" target="_blank" rel="noopener">Myntra</a>
+            <a class="smallBtn" href="${blinkit}" target="_blank" rel="noopener">Blinkit</a>
+            <a class="smallBtn" href="${swiggy}" target="_blank" rel="noopener">Swiggy</a>
+            <a class="smallBtn" href="${nearMe}" target="_blank" rel="noopener">Near me</a>
+          </div>
         </div>
-        <div class="price">${item.price || ""}</div>
-      </div>
-
-      <div class="buyRow">
-        <a class="smallBtn" href="${amazon}" target="_blank" rel="noopener">Amazon</a>
-        <a class="smallBtn" href="${flipkart}" target="_blank" rel="noopener">Flipkart</a>
-        <a class="smallBtn" href="${myntra}" target="_blank" rel="noopener">Myntra</a>
-        <a class="smallBtn" href="${blinkit}" target="_blank" rel="noopener">Blinkit</a>
-        <a class="smallBtn" href="${swiggy}" target="_blank" rel="noopener">Swiggy</a>
-        <a class="smallBtn" href="${nearMe}" target="_blank" rel="noopener">Near me</a>
-      </div>
-    </div>
-  `;
-}
-
-}
-
+      `;
+    }
 
     function buildMockResults(isMore=false){
-      // lightweight heuristics just to make the demo feel personalized
       const budget = state.budget || "1000-2000";
-      const vibe = state.vibe || "thoughtful";
       const interests = state.interests || [];
       const occasion = state.occasion || "birthday";
 
@@ -877,60 +889,41 @@ if (!r.ok) {
         "2000-5000":"₹2,000–₹5,000",
         "5000-plus":"₹5,000+"
       };
-
       const p = budgetMap[budget] || "₹1,000–₹2,000";
 
       const base = [
-        pick("handmade", "Handmade memory box + note set", p, "Looks personal without being expensive. Great for keepsakes."),
-        pick("journaling", "Premium journal + gel pen set", p, "A simple, high-utility gift that feels thoughtful."),
-        pick("coffee-tea", "Coffee tasting sampler / tea gift set", p, "Low-risk, high-delight for most people."),
-        pick("cooking", "Compact spice kit + recipe cards", p, "Practical and fun if they like cooking."),
-        pick("wellness", "Wellness hamper (candles + bath + herbal)", p, "A calm, self-care vibe that suits many occasions."),
-        pick("music", "Mini Bluetooth speaker stand / desk setup", p, "Upgrades daily life without being too personal."),
-        pick("movies-series", "Movie-night kit (snacks + popcorn bowl)", p, "Turns a normal night into an experience."),
-        pick("video-games", "Game store gift card or accessory kit", p, "Lets them choose while still feeling intentional."),
-        pick("yoga-meditation", "Yoga strap + mat towel combo", p, "Useful and aligned with healthy routines."),
-        pick("pottery", "Handmade ceramic mug", p, "Feels premium and personal; easy to use daily."),
-        pick("diy-projects", "DIY craft kit (beginner-friendly)", p, "Gives them an activity, not just an object.")
+        mk("Handmade memory box + note set", p, "Feels personal and keepsake-worthy.", "handmade memory box"),
+        mk("Premium journal + gel pen set", p, "Thoughtful and useful every day.", "premium journal gel pen set"),
+        mk("Coffee/tea sampler gift set", p, "Easy win for many people.", "coffee sampler gift set"),
+        mk("Cozy candle + self-care mini hamper", p, "Relaxing gift with a premium feel.", "self care hamper candle"),
+        mk("Personalized photo frame (minimal)", p, "Simple, emotional, and easy to gift.", "personalized photo frame minimal"),
+        mk("DIY craft kit (beginner friendly)", p, "An activity gift: fun + memorable.", "DIY craft kit beginner"),
+        mk("Handmade ceramic mug", p, "Premium daily-use item that feels special.", "handmade ceramic mug"),
+        mk("Skincare mini set (giftable)", p, "Practical and appreciated.", "skincare gift set"),
+        mk("Movie-night snack kit", p, "Turns a normal night into a vibe.", "movie night snack kit"),
+        mk("Desk upgrade: organizer + cute stationery", p, "Practical + aesthetic.", "desk organizer stationery set")
       ];
 
-      // filter to match interest/vibe (lightly)
       let filtered = base;
-
-      if (vibe === "handmade"){
-        filtered = base.filter(x => x.tags.includes("handmade") || x.title.toLowerCase().includes("handmade") || x.title.toLowerCase().includes("ceramic"));
-      } else if (interests.length && !interests.includes("open")){
-        filtered = base.filter(x => interests.some(t => x.tags.includes(t)));
+      if (interests.length && !interests.includes("open")){
+        // lightweight filtering by keyword match
+        filtered = base.filter(x => {
+          const t = (x.title + " " + x.buyQuery).toLowerCase();
+          return interests.some(i => t.includes(i.split("-")[0]));
+        });
+        if (!filtered.length) filtered = base;
       }
 
-      // occasion tweak
       if (occasion === "new-beginnings"){
-        filtered.unshift({title:"‘New beginnings’ care package", price:p, why:"A fresh-start bundle: something useful + something comforting.", buyQuery:"new beginnings care package hamper"});
+        filtered.unshift(mk("New beginnings care package", p, "A fresh-start bundle: useful + comforting.", "new beginnings care package"));
       }
 
       const slice = isMore ? filtered.slice(5,10) : filtered.slice(0,5);
       return slice.length ? slice : base.slice(0,5);
     }
 
-    function pick(tag, title, price, why){
-      return { title, price, why, buyQuery: title, tags:[tag] };
-    }
-
-    function validateCurrentStep(){
-      const s = steps[stepIndex];
-      if (s.key === "recipient_gender" && (!state.recipient || !state.gender)){
-        showError("Please select a recipient and a gender.");
-        return false;
-      }
-      if (s.type === "multi" && state.interests.length === 0){
-        showError("Please select at least one interest.");
-        return false;
-      }
-      if (s.type === "single" && !state[s.key]){
-        showError("Please select an option to continue.");
-        return false;
-      }
-      return true;
+    function mk(title, price, why, buyQuery){
+      return { title, price, why, buyQuery };
     }
 
     backBtn.addEventListener("click", () => {
@@ -942,7 +935,7 @@ if (!r.ok) {
     nextBtn.addEventListener("click", () => {
       clearError();
 
-      // results step: start over
+      // results: start over
       if (steps[stepIndex].key === "results"){
         stepIndex = 0;
         state.delivery = null;
@@ -953,23 +946,20 @@ if (!r.ok) {
         state.budget = null;
         state.vibe = null;
         state.email = null;
+        state.aiGifts = null;
         renderStep();
         return;
       }
 
-      // normal validation
       if (!validateCurrentStep()) return;
 
-      // move forward
       stepIndex++;
 
-      // if we arrive at email step, hide Next/Back and rely on form
-      if (steps[stepIndex].key === "email_gate"){
+      if (steps[stepIndex] && steps[stepIndex].key === "email_gate"){
         renderStep();
         return;
       }
 
-      // if somehow we pass step 5, go to email
       if (stepIndex > 5){
         stepIndex = steps.findIndex(x => x.key === "email_gate");
       }
@@ -977,8 +967,8 @@ if (!r.ok) {
       renderStep();
     });
 
-// initial render
-renderStep();
-
-
-
+    // Initial render
+    renderStep();
+  </script>
+</body>
+</html>
